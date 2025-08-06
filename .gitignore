@@ -37,7 +37,7 @@ src/assets/*.aac
 src/assets/*.flac
 src/assets/*.ogg
 src/assets/*.ts
-
+public
 # 큰 미디어 파일들 (용량이 큰 파일들)
 *.mp4
 *.mp3
