@@ -1,0 +1,62 @@
+# Logs
+logs
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+lerna-debug.log*
+
+node_modules
+dist
+dist-ssr
+*.local
+
+# Editor directories and files
+.vscode/*
+!.vscode/extensions.json
+.idea
+.DS_Store
+*.suo
+*.ntvs*
+*.njsproj
+*.sln
+*.sw?
+
+# Assets files (미디어 파일들)
+src/assets/*.mp4
+src/assets/*.mp3
+src/assets/*.mov
+src/assets/*.avi
+src/assets/*.wmv
+src/assets/*.flv
+src/assets/*.webm
+src/assets/*.mkv
+src/assets/*.wav
+src/assets/*.aac
+src/assets/*.flac
+src/assets/*.ogg
+src/assets/*.ts
+
+# 큰 미디어 파일들 (용량이 큰 파일들)
+*.mp4
+*.mp3
+*.mov
+*.avi
+*.wmv
+*.flv
+*.webm
+*.mkv
+*.wav
+*.aac
+*.flac
+*.ogg
+
+# 단, svg와 같은 작은 아이콘 파일들은 허용
+!src/assets/*.svg
+!src/assets/*.png
+!src/assets/*.jpg
+!src/assets/*.jpeg
+!src/assets/*.gif
+!src/assets/*.webp
+!src/assets/*.ico

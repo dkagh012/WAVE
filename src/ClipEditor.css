@@ -1,0 +1,143 @@
+.clip-editor {
+  padding: 16px;
+  font-family: sans-serif;
+  max-width: 900px;
+  margin: auto;
+}
+
+.tag-area {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 8px;
+  margin: 10px 0;
+}
+
+.tag {
+  background: #ffe0b2;
+  padding: 4px 8px;
+  border-radius: 8px;
+  font-size: 12px;
+}
+
+.video-section {
+  margin-top: 20px;
+}
+
+video {
+  width: 100%;
+  max-width: 100%;
+  border: 1px solid #ccc;
+  margin-bottom: 8px;
+}
+
+.timeline-bar {
+  position: relative;
+  height: 8px;
+  background-color: #ccc;
+  cursor: pointer;
+  border-radius: 4px;
+  margin-bottom: 8px;
+}
+
+.timeline-seeker {
+  position: absolute;
+  top: -4px;
+  width: 2px;
+  height: 16px;
+  background-color: red;
+  pointer-events: none;
+}
+
+.timeline {
+  margin-top: 8px;
+  background: #1e1e1e;
+  color: #fff;
+  border-radius: 4px;
+  font-size: 12px;
+  padding: 4px;
+}
+
+.track {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.thumbnails {
+  height: 80px;
+  background: #2a2a2a;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #ccc;
+}
+
+.waveform {
+  height: 60px;
+  background: #3a3a3a;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #aaa;
+}
+
+.clip-list {
+  width: 100%;
+  border-collapse: collapse;
+  margin-top: 20px;
+}
+
+.clip-list th,
+.clip-list td {
+  border: 1px solid #ccc;
+  padding: 8px;
+  text-align: center;
+}
+
+.actions {
+  margin-top: 20px;
+  display: flex;
+  gap: 10px;
+}
+
+button.highlight {
+  background: #007bff;
+  color: white;
+  padding: 8px 16px;
+  border-radius: 4px;
+}
+
+button.complete {
+  background: #6c757d;
+  color: white;
+  padding: 8px 16px;
+  border-radius: 4px;
+}
+.timeline-bar {
+  display: flex;
+  overflow-x: auto;
+  padding: 8px;
+  background: #1e1e1e;
+  gap: 2px;
+  margin: 12px 0;
+  border-radius: 6px;
+}
+
+.thumbnail-img {
+  width: 100px;
+  height: 60px;
+  object-fit: cover;
+  cursor: pointer;
+  border: 2px solid transparent;
+  border-radius: 4px;
+  transition: border 0.2s;
+}
+
+.thumbnail-img:hover {
+  border-color: #888;
+}
+
+.thumbnail-img.selected {
+  border-color: #ff5252;
+}

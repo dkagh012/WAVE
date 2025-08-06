@@ -1,0 +1,22 @@
+.header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 20px;
+}
+
+.share-button {
+  color: white;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  font-weight: bold;
+}
+.share-button.enabled {
+  background-color: #ff9800;
+  color: white;
+}
+.share-button.disabled {
+  background-color: #ccc;
+  color: white;
+}
