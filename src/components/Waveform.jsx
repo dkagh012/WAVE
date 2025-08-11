@@ -48,7 +48,7 @@ const Waveform = ({
       responsive: false,
       normalize: true,
       barWidth: 2,
-      minPxPerSec: 100,
+      minPxPerSec: 2,
       interact: true,
       maxCanvasWidth: 4000,
       maxCanvasLength: 2000,
@@ -124,52 +124,6 @@ const Waveform = ({
     const position = (time / duration) * containerWidth;
 
     cursorRef.current.style.left = `${position}px`;
-  };
-
-  // Region 위치 업데이트 (WaveSurfer가 자동으로 관리하므로 비활성화)
-  const updateRegionPositions = () => {
-    // WaveSurfer의 Region은 자체적으로 위치를 올바르게 관리하므로
-    // 수동 위치 조정을 비활성화하여 드래그 충돌 방지
-    return;
-
-    // 이전 코드 (필요시 다시 활성화)
-    /*
-    if (!regionsPlugin || !scrollElementRef.current || !wavesurfer) return;
-
-    const scrollElement = scrollElementRef.current;
-    const regions = regionsPlugin.getRegions();
-    const duration = wavesurfer.getDuration();
-
-    if (duration === 0) return;
-
-    regions.forEach((region) => {
-      const regionElement = region.element;
-      if (regionElement) {
-        const containerWidth = scrollElement.scrollWidth;
-        const startPosition = (region.start / duration) * containerWidth;
-        const endPosition = (region.end / duration) * containerWidth;
-
-        const adjustedStartPosition = startPosition - scrollElement.scrollLeft;
-        const adjustedEndPosition = endPosition - scrollElement.scrollLeft;
-
-        const regionWidth = Math.max(
-          0,
-          adjustedEndPosition - adjustedStartPosition
-        );
-
-        if (
-          adjustedEndPosition < 0 ||
-          adjustedStartPosition > scrollElement.clientWidth
-        ) {
-          regionElement.style.display = "none";
-        } else {
-          regionElement.style.display = "block";
-          regionElement.style.left = `${Math.max(0, adjustedStartPosition)}px`;
-          regionElement.style.width = `${regionWidth}px`;
-        }
-      }
-    });
-    */
   };
 
   // Region 이벤트 핸들러 설정 함수
@@ -253,14 +207,10 @@ const Waveform = ({
     scrollElement.scrollLeft = adjustedScrollLeft;
 
     setTimeout(() => {
-      updateRegionPositions();
-
       if (Math.abs(scrollElement.scrollLeft - adjustedScrollLeft) > 10) {
         console.log("스크롤 재시도:", adjustedScrollLeft);
         scrollElement.scrollLeft = adjustedScrollLeft;
-        setTimeout(() => {
-          updateRegionPositions();
-        }, 50);
+        setTimeout(() => {}, 50);
       }
     }, 100);
   };
@@ -282,9 +232,7 @@ const Waveform = ({
       e.preventDefault();
       e.stopPropagation();
 
-      requestAnimationFrame(() => {
-        updateRegionPositions();
-      });
+      requestAnimationFrame(() => {});
     };
 
     let isDragging = false;
@@ -368,9 +316,7 @@ const Waveform = ({
       updateWaveformCursor(time);
     };
 
-    const handleScroll = () => {
-      updateRegionPositions();
-    };
+    const handleScroll = () => {};
 
     scrollElement.addEventListener("scroll", handleScroll, { passive: false });
     scrollElement.addEventListener("wheel", handleWheel, { passive: false });

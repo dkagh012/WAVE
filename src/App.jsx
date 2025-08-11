@@ -1,6 +1,4 @@
 import React, { useEffect, useState, useCallback } from "react";
-import AudioFile from "./assets/sample-mp4-file.mp4";
-import VideoFile from "./assets/sample-mp4-file.mp4";
 import ClipList from "./ClipList";
 import SharePopup from "./SharePopup";
 import VideoPlayer from "./components/VideoPlayer";
@@ -9,8 +7,11 @@ import TimeDisplay from "./components/TimeDisplay";
 import Header from "./components/Header";
 import "./App.css";
 
-const audioUrl = AudioFile;
-const videoUrl = VideoFile;
+// 오디오 파일 import
+import audioFile from "./assets/testfile.mp4";
+
+const audioUrl = audioFile;
+const videoUrl = "/hls/output.m3u8";
 const initialClips = [
   { id: 1, label: "Intro", from: 10, to: 30 },
   { id: 2, label: "Middle", from: 600, to: 1200 },
@@ -33,7 +34,6 @@ export default function VideoEditor() {
   // 공유 관련 상태
   const [isSharePopupOpen, setIsSharePopupOpen] = useState(false);
   const [selectedClipForShare, setSelectedClipForShare] = useState(null);
-  const [sharedTimeRange, setSharedTimeRange] = useState(null);
 
   // URL 파라미터에서 공유된 시간 정보 확인
   useEffect(() => {
@@ -47,7 +47,6 @@ export default function VideoEditor() {
       const toTime = parseFloat(to);
 
       if (!isNaN(fromTime) && !isNaN(toTime)) {
-        setSharedTimeRange({ from: fromTime, to: toTime });
         console.log(
           `공유된 링크: ${clipName || "클립"} (${fromTime} ~ ${toTime})`
         );
@@ -132,7 +131,8 @@ export default function VideoEditor() {
           currentTime={currentTime}
           onTimeUpdate={handleTimeUpdate}
           onDurationChange={handleDurationChange}
-          sharedTimeRange={sharedTimeRange}
+          selectedClipId={selectedClipId}
+          clips={clips}
         />
         <div className="clip-list-container">
           <ClipList
