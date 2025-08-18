@@ -8,10 +8,10 @@ import Header from "./components/Header";
 import "./App.css";
 
 // 오디오 파일 import
-import audioFile from "./assets/testfile.mp4";
+import audioFile from "./assets/output.mp3";
 
 const audioUrl = audioFile;
-const videoUrl = "/hls/output.m3u8";
+const videoUrl = "/master.m3u8";
 const initialClips = [
   { id: 1, label: "Intro", from: 10, to: 30 },
   { id: 2, label: "Middle", from: 600, to: 1200 },

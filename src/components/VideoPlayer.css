@@ -1,18 +1,66 @@
-.video-container {
+/* VideoPlayer 컴포넌트 스타일 */
+.video-player-wrapper {
+  margin-top: 20px;
+}
+
+.video-player__container {
   position: relative;
   width: 100%;
   max-width: 800px;
   margin: 0 auto;
 }
 
-.video-player {
+.video-player__video {
   width: 100%;
   height: auto;
   border-radius: 8px;
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  cursor: pointer;
+  transition: transform 0.2s ease;
+  position: relative;
 }
 
-.custom-controls {
+.video-player__video:hover {
+  transform: scale(1.01);
+}
+
+.video-player__loading-overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.7);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  border-radius: 8px;
+  z-index: 5;
+}
+
+.video-player__loading-spinner {
+  font-size: 48px;
+  margin-bottom: 16px;
+  animation: spin 1s linear infinite;
+}
+
+.video-player__loading-text {
+  color: white;
+  font-size: 16px;
+  font-weight: 500;
+}
+
+@keyframes spin {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+.video-player__controls {
   display: flex;
   align-items: center;
   gap: 10px;
@@ -23,8 +71,7 @@
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
 }
 
-.play-btn,
-.stop-btn {
+.video-player__btn {
   background: #007bff;
   color: white;
   border: none;
@@ -32,50 +79,301 @@
   padding: 8px 12px;
   cursor: pointer;
   font-size: 16px;
-  transition: background-color 0.2s;
+  transition: all 0.2s ease;
 }
 
-.play-btn:hover,
-.stop-btn:hover {
+.video-player__btn:hover {
   background: #0056b3;
+  transform: translateY(-1px);
 }
 
-.time-display {
-  font-family: monospace;
+.video-player__btn--play {
+  background: #28a745;
+}
+
+.video-player__btn--play:hover {
+  background: #218838;
+}
+
+.video-player__btn--stop {
+  background: #dc3545;
+}
+
+.video-player__btn--stop:hover {
+  background: #c82333;
+}
+
+.video-player__btn--settings {
+  background: #6c757d;
+  margin-left: auto;
+}
+
+.video-player__btn--settings:hover {
+  background: #5a6268;
+}
+
+.video-player__btn--fullscreen {
+  background: #17a2b8;
+}
+
+.video-player__btn--fullscreen:hover {
+  background: #138496;
+}
+
+.video-player__btn--skip-backward,
+.video-player__btn--skip-forward {
+  background: #6f42c1;
+}
+
+.video-player__btn--skip-backward:hover,
+.video-player__btn--skip-forward:hover {
+  background: #5a32a3;
+}
+
+.video-player__btn--mute {
+  background: #fd7e14;
+}
+
+.video-player__btn--mute:hover {
+  background: #e8690b;
+}
+
+.video-player__volume-control {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  min-width: 120px;
+}
+
+.video-player__volume-slider {
+  flex: 1;
+  height: 6px;
+  background: #ddd;
+  border-radius: 3px;
+  outline: none;
+  cursor: pointer;
+  -webkit-appearance: none;
+  appearance: none;
+}
+
+.video-player__volume-slider::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  appearance: none;
+  width: 16px;
+  height: 16px;
+  background: #007bff;
+  border-radius: 50%;
+  cursor: pointer;
+}
+
+.video-player__volume-slider::-moz-range-thumb {
+  width: 16px;
+  height: 16px;
+  background: #007bff;
+  border-radius: 50%;
+  cursor: pointer;
+  border: none;
+}
+
+.video-player__time {
+  font-family: "Courier New", monospace;
   font-size: 14px;
   color: #333;
   min-width: 80px;
   text-align: center;
+  padding: 4px 8px;
+  background: white;
+  border-radius: 4px;
+  border: 1px solid #dee2e6;
 }
 
-.custom-seekbar {
+.video-player__time--current {
+  color: #007bff;
+}
+
+.video-player__time--duration {
+  color: #28a745;
+}
+
+.video-player__seekbar {
   flex: 1;
   height: 8px;
   background: #ddd;
   border-radius: 4px;
   cursor: pointer;
   position: relative;
-  overflow: hidden;
+  overflow: visible;
+  user-select: none;
 }
 
-.progress-bar {
+.video-player__seekbar:hover {
+  background: #ccc;
+}
+
+.video-player__seekbar:active {
+  background: #bbb;
+}
+
+.video-player__seekbar.dragging {
+  background: #999;
+}
+
+.video-player__seek-preview {
+  position: absolute;
+  top: -40px;
+  background: rgba(0, 0, 0, 0.8);
+  color: white;
+  padding: 4px 8px;
+  border-radius: 4px;
+  font-size: 12px;
+  font-family: "Courier New", monospace;
+  white-space: nowrap;
+  pointer-events: none;
+  z-index: 30;
+}
+
+.video-player__seek-preview::after {
+  content: "";
+  position: absolute;
+  top: 100%;
+  left: 50%;
+  transform: translateX(-50%);
+  border: 4px solid transparent;
+  border-top-color: rgba(0, 0, 0, 0.8);
+}
+
+.video-player__progress {
   height: 100%;
-  background: #007bff;
+  background: linear-gradient(90deg, #007bff, #0056b3);
   border-radius: 4px;
   transition: width 0.1s ease;
 }
 
-.show-full-video-btn {
+/* 설정 모달 스타일 */
+.video-player__settings-modal {
+  position: absolute;
+  top: 100%;
+  right: 0;
+  background: white;
+  border-radius: 8px;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.15);
+  border: 1px solid #dee2e6;
+  min-width: 280px;
+  z-index: 1000;
   margin-top: 10px;
-  padding: 8px 16px;
-  background-color: #007bff;
-  color: white;
-  border: none;
-  border-radius: 4px;
-  cursor: pointer;
-  transition: background-color 0.2s;
+  animation: slideDown 0.2s ease;
 }
 
-.show-full-video-btn:hover {
-  background-color: #0056b3;
+.video-player__settings-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 15px 20px;
+  border-bottom: 1px solid #dee2e6;
+  background: #f8f9fa;
+  border-radius: 8px 8px 0 0;
+}
+
+.video-player__settings-header h3 {
+  margin: 0;
+  font-size: 16px;
+  color: #333;
+  font-weight: 600;
+}
+
+.video-player__settings-close {
+  background: none;
+  border: none;
+  font-size: 20px;
+  cursor: pointer;
+  color: #666;
+  padding: 0;
+  width: 24px;
+  height: 24px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 50%;
+  transition: all 0.2s ease;
+}
+
+.video-player__settings-close:hover {
+  background-color: #e9ecef;
+  color: #333;
+}
+
+.video-player__settings-content {
+  padding: 20px;
+}
+
+.video-player__setting-group {
+  margin-bottom: 20px;
+}
+
+.video-player__setting-group:last-child {
+  margin-bottom: 0;
+}
+
+.video-player__setting-label {
+  display: block;
+  margin-bottom: 8px;
+  font-weight: 600;
+  color: #333;
+  font-size: 14px;
+}
+
+.video-player__setting-select {
+  width: 100%;
+  padding: 8px 12px;
+  border: 1px solid #ced4da;
+  border-radius: 4px;
+  font-size: 14px;
+  background: white;
+  cursor: pointer;
+  transition: border-color 0.15s ease-in-out, box-shadow 0.15s ease-in-out;
+}
+
+.video-player__setting-select:focus {
+  outline: 0;
+  border-color: #80bdff;
+  box-shadow: 0 0 0 0.2rem rgba(0, 123, 255, 0.25);
+}
+
+.video-player__setting-select:hover {
+  border-color: #adb5bd;
+}
+
+/* 애니메이션 */
+@keyframes slideDown {
+  from {
+    opacity: 0;
+    transform: translateY(-10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* 반응형 */
+@media (max-width: 768px) {
+  .video-player__controls {
+    flex-wrap: wrap;
+    gap: 8px;
+  }
+
+  .video-player__time {
+    min-width: 60px;
+    font-size: 12px;
+  }
+
+  .video-player__settings-modal {
+    right: -10px;
+    min-width: 250px;
+  }
+
+  .video-player__btn--settings {
+    margin-left: 0;
+    order: 1;
+  }
 }

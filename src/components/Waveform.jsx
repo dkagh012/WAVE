@@ -49,7 +49,7 @@ const Waveform = ({
       normalize: true,
       barWidth: 2,
       minPxPerSec: 2,
-      interact: true,
+      interact: false,
       maxCanvasWidth: 4000,
       maxCanvasLength: 2000,
       fillParent: true, // Region 정확성을 위해 true로 설정
@@ -73,9 +73,19 @@ const Waveform = ({
       createWaveformCursor();
       onWaveformReady(ws);
 
+      // WaveSurfer의 기본 클릭 이벤트 비활성화
+      ws.setTime(0);
+
       setTimeout(() => {
         // 초기화 완료 처리
       }, 300);
+    });
+
+    // WaveSurfer의 기본 클릭 이벤트 비활성화
+    ws.on("click", (e) => {
+      e.preventDefault();
+      e.stopPropagation();
+      return false;
     });
 
     ws.load(blobUrl);
@@ -297,6 +307,10 @@ const Waveform = ({
     const handleClick = (e) => {
       if (!wavesurfer || isDraggingWaveform) return;
 
+      // WaveSurfer의 기본 클릭 동작 방지
+      e.preventDefault();
+      e.stopPropagation();
+
       if (e.target.closest("[data-region-id]")) return;
 
       const rect = scrollElement.getBoundingClientRect();
@@ -424,8 +438,28 @@ const Waveform = ({
         }}
         ref={scrollElementRef}
       >
-        <div ref={waveformContainerRef} style={{ width: "100%" }} />
+        <div
+          ref={waveformContainerRef}
+          style={{
+            width: "100%",
+            // WaveSurfer progress 숨기기
+            "--wavesurfer-progress-color": "transparent",
+            "--wavesurfer-progress-opacity": "0",
+          }}
+        />
       </div>
+
+      {/* WaveSurfer progress 숨기기 위한 추가 CSS */}
+      <style>
+        {`
+          .wavesurfer-container canvas {
+            pointer-events: none;
+          }
+          .wavesurfer-container canvas:last-child {
+            pointer-events: auto;
+          }
+        `}
+      </style>
     </div>
   );
 };
