@@ -485,127 +485,176 @@ const VideoPlayer = ({
           브라우저가 비디오 태그를 지원하지 않습니다.
         </video>
 
+        {/* YouTube 스타일 컨트롤 오버레이 */}
+        <div className="video-player__controls-overlay">
+          {/* 상단 컨트롤 (전체화면, 설정 등) */}
+          <div className="video-player__top-controls">
+            <div className="video-player__top-left">
+              <span className="video-player__quality-indicator">
+                {currentQuality === "auto"
+                  ? "자동"
+                  : `${availableQualities[currentQuality]?.height || ""}p`}
+              </span>
+            </div>
+            <div className="video-player__top-right">
+              <button
+                className="video-player__btn video-player__btn--top video-player__btn--settings"
+                onClick={() => setShowSettings(!showSettings)}
+                title="설정"
+              >
+                ⚙️
+              </button>
+              <button
+                className="video-player__btn video-player__btn--top video-player__btn--fullscreen"
+                onClick={toggleFullscreen}
+                title="전체화면"
+              >
+                ⛶
+              </button>
+            </div>
+          </div>
+
+          {/* 중앙 재생 버튼 제거 - 비디오 클릭으로 대체 */}
+
+          {/* 하단 컨트롤 */}
+          <div className="video-player__bottom-controls">
+            {/* 프로그레스바 */}
+            <div className="video-player__progress-container">
+              <div
+                className={`video-player__seekbar ${
+                  isDragging ? "dragging" : ""
+                }`}
+                onClick={handleSeekBarClick}
+                onMouseDown={handleSeekBarMouseDown}
+                onMouseMove={handleSeekBarMouseMove}
+                onMouseUp={handleSeekBarMouseUp}
+                onMouseLeave={handleSeekBarMouseLeave}
+              >
+                <div className="video-player__progress-bg"></div>
+                <div
+                  className="video-player__progress"
+                  style={{ width: `${getProgressPercent()}%` }}
+                ></div>
+                <div
+                  className="video-player__progress-handle"
+                  style={{ left: `${getProgressPercent()}%` }}
+                ></div>
+                {/* 드래그 중일 때 시크 프리뷰 */}
+                {isDragging && (
+                  <div
+                    className="video-player__seek-preview"
+                    style={{
+                      left: `${getProgressPercent()}%`,
+                      transform: "translateX(-50%)",
+                    }}
+                  >
+                    {formatTime(getSeekPreviewTime())}
+                  </div>
+                )}
+              </div>
+            </div>
+
+            {/* 하단 컨트롤 버튼들 */}
+            <div className="video-player__bottom-buttons">
+              <div className="video-player__left-controls">
+                <button
+                  className="video-player__btn video-player__btn--play"
+                  onClick={togglePlayPause}
+                >
+                  {isPlaying ? "⏸️" : "▶️"}
+                </button>
+
+                <button
+                  className="video-player__btn video-player__btn--stop"
+                  onClick={() => {
+                    const video = videoRef.current;
+                    if (video) {
+                      video.pause();
+                      video.currentTime = 0;
+                      setIsPlaying(false);
+                    }
+                  }}
+                >
+                  ⏹️
+                </button>
+
+                <button
+                  className="video-player__btn video-player__btn--skip-backward"
+                  onClick={skipBackward}
+                  title="10초 뒤로"
+                >
+                  ⏪
+                </button>
+
+                <button
+                  className="video-player__btn video-player__btn--skip-forward"
+                  onClick={skipForward}
+                  title="10초 앞으로"
+                >
+                  ⏩
+                </button>
+
+                {/* 볼륨 컨트롤 */}
+                <div className="video-player__volume-control">
+                  <button
+                    className="video-player__btn video-player__btn--mute"
+                    onClick={toggleMute}
+                    title={isMuted ? "음소거 해제" : "음소거"}
+                  >
+                    {isMuted || volume === 0
+                      ? "🔇"
+                      : volume > 0.5
+                      ? "🔊"
+                      : "🔉"}
+                  </button>
+                  <div className="video-player__volume-slider-container">
+                    <input
+                      type="range"
+                      min="0"
+                      max="1"
+                      step="0.1"
+                      value={isMuted ? 0 : volume}
+                      onChange={(e) =>
+                        handleVolumeChange(parseFloat(e.target.value))
+                      }
+                      className="video-player__volume-slider"
+                      title="볼륨 조절"
+                    />
+                  </div>
+                </div>
+              </div>
+
+              <div className="video-player__right-controls">
+                <div className="video-player__time-display">
+                  <span className="video-player__time video-player__time--current">
+                    {formatTime(currentTime)}
+                  </span>
+                  <span className="video-player__time-separator">/</span>
+                  <span className="video-player__time video-player__time--duration">
+                    {formatTime(videoRef.current?.duration || 0)}
+                  </span>
+                </div>
+
+                {/* 설정 버튼 */}
+                <button
+                  className="video-player__btn video-player__btn--settings"
+                  onClick={() => setShowSettings(!showSettings)}
+                  title="설정"
+                >
+                  ⚙️
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+
         {/* 로딩 오버레이 */}
-        {/* {isSeeking && (
+        {isSeeking && (
           <div className="video-player__loading-overlay">
             <div className="video-player__loading-spinner">⏳</div>
             <div className="video-player__loading-text">로딩 중...</div>
           </div>
-        )} */}
-
-        {/* 커스텀 재생 컨트롤 */}
-        <div className="video-player__controls">
-          <button
-            className="video-player__btn video-player__btn--play"
-            onClick={togglePlayPause}
-          >
-            {isPlaying ? "⏸️" : "▶️"}
-          </button>
-
-          <button
-            className="video-player__btn video-player__btn--stop"
-            onClick={() => {
-              const video = videoRef.current;
-              if (video) {
-                video.pause();
-                video.currentTime = 0;
-                setIsPlaying(false);
-              }
-            }}
-          >
-            ⏹️
-          </button>
-
-          {/* 이전/이후 버튼 */}
-          <button
-            className="video-player__btn video-player__btn--skip-backward"
-            onClick={skipBackward}
-            title="10초 뒤로"
-          >
-            ⏪
-          </button>
-
-          <button
-            className="video-player__btn video-player__btn--skip-forward"
-            onClick={skipForward}
-            title="10초 앞으로"
-          >
-            ⏩
-          </button>
-
-          <div className="video-player__time video-player__time--current">
-            <span>
-              {" "}
-              {formatTime(currentTime)} /{" "}
-              {formatTime(videoRef.current?.duration || 0)}
-            </span>
-          </div>
-
-          <div
-            className={`video-player__seekbar ${isDragging ? "dragging" : ""}`}
-            onClick={handleSeekBarClick}
-            onMouseDown={handleSeekBarMouseDown}
-            onMouseMove={handleSeekBarMouseMove}
-            onMouseUp={handleSeekBarMouseUp}
-            onMouseLeave={handleSeekBarMouseLeave}
-          >
-            <div
-              className="video-player__progress"
-              style={{ width: `${getProgressPercent()}%` }}
-            ></div>
-            {/* 드래그 중일 때 시크 프리뷰 */}
-            {isDragging && (
-              <div
-                className="video-player__seek-preview"
-                style={{
-                  left: `${getProgressPercent()}%`,
-                  transform: "translateX(-50%)",
-                }}
-              >
-                {formatTime(getSeekPreviewTime())}
-              </div>
-            )}
-          </div>
-
-          {/* 볼륨 컨트롤 */}
-          <div className="video-player__volume-control">
-            <button
-              className="video-player__btn video-player__btn--mute"
-              onClick={toggleMute}
-              title={isMuted ? "음소거 해제" : "음소거"}
-            >
-              {isMuted || volume === 0 ? "🔇" : volume > 0.5 ? "🔊" : "🔉"}
-            </button>
-            <input
-              type="range"
-              min="0"
-              max="1"
-              step="0.1"
-              value={isMuted ? 0 : volume}
-              onChange={(e) => handleVolumeChange(parseFloat(e.target.value))}
-              className="video-player__volume-slider"
-              title="볼륨 조절"
-            />
-          </div>
-
-          {/* 전체화면 버튼 */}
-          <button
-            className="video-player__btn video-player__btn--fullscreen"
-            onClick={toggleFullscreen}
-            title="전체화면"
-          >
-            ⛶
-          </button>
-
-          {/* 설정 버튼 */}
-          <button
-            className="video-player__btn video-player__btn--settings"
-            onClick={() => setShowSettings(!showSettings)}
-            title="설정"
-          >
-            ⚙️
-          </button>
-        </div>
+        )}
 
         {/* 설정 모달 */}
         {showSettings && (

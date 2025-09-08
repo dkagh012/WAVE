@@ -23,6 +23,28 @@ function App() {
         enableWorker: true,
         lowLatencyMode: true,
         backBufferLength: 90,
+        // ABR (Adaptive Bitrate) 설정 최적화
+        abrEwmaDefaultEstimate: 500000,
+        abrBandWidthFactor: 0.95,
+        abrBandWidthUpFactor: 0.7,
+        abrMaxWithRealBitrate: true,
+        // 버퍼링 최적화
+        maxBufferLength: 30,
+        maxMaxBufferLength: 60,
+        maxBufferSize: 60 * 1000 * 1000, // 60MB
+        maxBufferHole: 0.5,
+        maxLoadingDelay: 4,
+        maxStarvationDelay: 4,
+        // 세그먼트 로딩 최적화
+        startLevel: -1, // 자동 품질 선택
+        startFragPrefetch: true,
+        testBandwidth: true,
+        // 성능 최적화
+        enableSoftwareAES: true,
+        // 에러 처리
+        fragLoadingTimeOut: 20000,
+        manifestLoadingTimeOut: 20000,
+        levelLoadingTimeOut: 20000,
       });
 
       // HLS 이벤트 리스너 설정
@@ -32,11 +54,41 @@ function App() {
       });
 
       hlsRef.current.on(Hls.Events.ERROR, (event, data) => {
-        console.error("HLS 에러:", data);
+        // 치명적이지 않은 에러는 무시
+        if (data.fatal === false) {
+          console.warn("HLS 경고:", data);
+          return;
+        }
+
+        // 치명적인 에러만 로그
+        console.error("HLS 치명적 에러:", data);
+
+        // 에러 복구 시도
+        if (data.type === Hls.ErrorTypes.NETWORK_ERROR) {
+          console.log("네트워크 에러 복구 시도...");
+          hlsRef.current.startLoad();
+        } else if (data.type === Hls.ErrorTypes.MEDIA_ERROR) {
+          console.log("미디어 에러 복구 시도...");
+          hlsRef.current.recoverMediaError();
+        }
+      });
+
+      // 화질 변경 모니터링
+      hlsRef.current.on(Hls.Events.LEVEL_SWITCHED, (event, data) => {
+        console.log("화질 변경:", data.level, "->", data.level);
+      });
+
+      // 세그먼트 로딩 모니터링
+      hlsRef.current.on(Hls.Events.FRAG_LOADING, (event, data) => {
+        console.log("세그먼트 로딩 시작:", data.frag.url);
+      });
+
+      hlsRef.current.on(Hls.Events.FRAG_LOADED, (event, data) => {
+        console.log("세그먼트 로딩 완료:", data.frag.url);
       });
 
       // 비디오 소스 설정
-      hlsRef.current.loadSource("/hls/output.m3u8");
+      hlsRef.current.loadSource("output.m3u8");
       hlsRef.current.attachMedia(videoRef.current);
 
       return () => {
@@ -46,7 +98,7 @@ function App() {
       };
     } else if (videoRef.current.canPlayType("application/vnd.apple.mpegurl")) {
       // Safari 네이티브 HLS 지원
-      videoRef.current.src = "/hls/output.m3u8";
+      videoRef.current.src = "output.m3u8";
     }
   }, []);
 
@@ -140,6 +192,27 @@ function App() {
         backBufferLength: 90,
         startLevel: -1, // 자동 품질 선택
         startPosition: startTime, // 시작 위치 설정
+        // ABR (Adaptive Bitrate) 설정 최적화
+        abrEwmaDefaultEstimate: 500000,
+        abrBandWidthFactor: 0.95,
+        abrBandWidthUpFactor: 0.7,
+        abrMaxWithRealBitrate: true,
+        // 버퍼링 최적화
+        maxBufferLength: 30,
+        maxMaxBufferLength: 60,
+        maxBufferSize: 60 * 1000 * 1000, // 60MB
+        maxBufferHole: 0.5,
+        maxLoadingDelay: 4,
+        maxStarvationDelay: 4,
+        // 세그먼트 로딩 최적화
+        startFragPrefetch: true,
+        testBandwidth: true,
+        // 성능 최적화
+        enableSoftwareAES: true,
+        // 에러 처리
+        fragLoadingTimeOut: 20000,
+        manifestLoadingTimeOut: 20000,
+        levelLoadingTimeOut: 20000,
       });
 
       // HLS 이벤트 리스너 설정
@@ -177,7 +250,7 @@ function App() {
       });
 
       // 클립 구간에 맞는 세그먼트만 로드
-      hlsRef.current.loadSource("/hls/output.m3u8");
+      hlsRef.current.loadSource("output.m3u8");
       hlsRef.current.attachMedia(videoRef.current);
     } catch (error) {
       console.error("클립 로드 실패:", error);
@@ -210,6 +283,28 @@ function App() {
       enableWorker: true,
       lowLatencyMode: true,
       backBufferLength: 90,
+      // ABR (Adaptive Bitrate) 설정 최적화
+      abrEwmaDefaultEstimate: 500000,
+      abrBandWidthFactor: 0.95,
+      abrBandWidthUpFactor: 0.7,
+      abrMaxWithRealBitrate: true,
+      // 버퍼링 최적화
+      maxBufferLength: 30,
+      maxMaxBufferLength: 60,
+      maxBufferSize: 60 * 1000 * 1000, // 60MB
+      maxBufferHole: 0.5,
+      maxLoadingDelay: 4,
+      maxStarvationDelay: 4,
+      // 세그먼트 로딩 최적화
+      startLevel: -1, // 자동 품질 선택
+      startFragPrefetch: true,
+      testBandwidth: true,
+      // 성능 최적화
+      enableSoftwareAES: true,
+      // 에러 처리
+      fragLoadingTimeOut: 20000,
+      manifestLoadingTimeOut: 20000,
+      levelLoadingTimeOut: 20000,
     });
 
     hlsRef.current.on(Hls.Events.MANIFEST_PARSED, () => {
@@ -221,7 +316,7 @@ function App() {
       console.error("전체 영상 HLS 에러:", data);
     });
 
-    hlsRef.current.loadSource("/hls/output.m3u8");
+    hlsRef.current.loadSource("output.m3u8");
     hlsRef.current.attachMedia(videoRef.current);
 
     setCurrentClip(null);
@@ -245,6 +340,11 @@ function App() {
     } else {
       videoRef.current.play();
     }
+  };
+
+  // 비디오 클릭으로 재생/정지 토글
+  const handleVideoClick = () => {
+    togglePlayPause();
   };
 
   // 시간 포맷팅 함수
@@ -287,6 +387,7 @@ function App() {
           ref={videoRef}
           className="video-player"
           style={{ width: "100%", maxWidth: "800px" }}
+          onClick={handleVideoClick}
         />
 
         {/* 커스텀 컨트롤 */}
